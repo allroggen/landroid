@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import timedelta
+from datetime import datetime, timezone
 from typing import Any
 
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorEntityDescription
@@ -161,5 +161,6 @@ class WorxVisionSensorEntity(
 
 def datetime_age(value):
     """Return age of timestamp in seconds."""
-    delta = (value.astimezone() - value.astimezone()).total_seconds()
-    return int(abs(delta) // timedelta(seconds=1).total_seconds())
+    now = datetime.now(timezone.utc)
+    delta = now - value.astimezone(timezone.utc)
+    return max(0, int(delta.total_seconds()))

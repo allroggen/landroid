@@ -80,8 +80,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         serial_number=entry.data.get(CONF_SERIAL_NUMBER),
     )
 
-    await coordinator.async_setup()
-    await coordinator.async_config_entry_first_refresh()
+    try:
+        await coordinator.async_setup()
+        await coordinator.async_config_entry_first_refresh()
+    except Exception:
+        await coordinator.async_shutdown()
+        raise
 
     hass.data[DOMAIN][entry.entry_id] = coordinator
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -90,19 +94,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.services.async_register(
             DOMAIN,
             SERVICE_START_ZONE,
-            _handle_start_zone,
+            lambda call: _handle_start_zone(hass, call),
             schema=START_ZONE_SCHEMA,
         )
         hass.services.async_register(
             DOMAIN,
             SERVICE_SET_SCHEDULE,
-            _handle_set_schedule,
+            lambda call: _handle_set_schedule(hass, call),
             schema=SET_SCHEDULE_SCHEMA,
         )
         hass.services.async_register(
             DOMAIN,
             SERVICE_OTS,
-            _handle_ots,
+            lambda call: _handle_ots(hass, call),
             schema=OTS_SCHEMA,
         )
 
@@ -140,9 +144,8 @@ def _iter_coordinators(
     ]
 
 
-async def _handle_start_zone(call: ServiceCall) -> None:
+async def _handle_start_zone(hass: HomeAssistant, call: ServiceCall) -> None:
     """Handle start zone service."""
-    hass: HomeAssistant = call.hass
     serial_number = call.data.get(CONF_SERIAL_NUMBER)
     zone = call.data[ATTR_ZONE]
 
@@ -154,9 +157,8 @@ async def _handle_start_zone(call: ServiceCall) -> None:
         await coordinator.async_start_zone(zone)
 
 
-async def _handle_set_schedule(call: ServiceCall) -> None:
+async def _handle_set_schedule(hass: HomeAssistant, call: ServiceCall) -> None:
     """Handle set schedule service."""
-    hass: HomeAssistant = call.hass
     serial_number = call.data.get(CONF_SERIAL_NUMBER)
 
     targets = _iter_coordinators(hass, serial_number)
@@ -171,9 +173,8 @@ async def _handle_set_schedule(call: ServiceCall) -> None:
         await coordinator.async_set_schedule(enabled, entries, time_extension)
 
 
-async def _handle_ots(call: ServiceCall) -> None:
+async def _handle_ots(hass: HomeAssistant, call: ServiceCall) -> None:
     """Handle one-time-schedule service."""
-    hass: HomeAssistant = call.hass
     serial_number = call.data.get(CONF_SERIAL_NUMBER)
 
     targets = _iter_coordinators(hass, serial_number)
