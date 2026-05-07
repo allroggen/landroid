@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
 from functools import partial
+from typing import Any
 
 import voluptuous as vol
 from pyworxcloud import WorxCloud
