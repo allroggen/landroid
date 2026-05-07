@@ -56,6 +56,21 @@ Custom Home Assistant integration for Worx Vision / Landroid robotic mowers powe
 | `worx_vision.set_schedule` | Update mower schedule | `serial_number` (optional), `enabled` (optional), `time_extension` (optional), `entries` (optional) |
 | `worx_vision.ots` | One-time schedule run | `serial_number` (optional), `boundary` (optional, default `false`), `runtime` (required, minutes) |
 
+### Service field details
+
+- `worx_vision.start_zone`
+  - `serial_number` (optional)
+  - `zone` (required)
+- `worx_vision.set_schedule`
+  - `serial_number` (optional)
+  - `enabled` (optional)
+  - `time_extension` (optional)
+  - `entries` (optional list of schedule objects)
+- `worx_vision.ots`
+  - `serial_number` (optional)
+  - `boundary` (optional, default `false`)
+  - `runtime` (required, minutes)
+
 ## Support
 
 - Issues / bug reports: <https://github.com/allroggen/landroid/issues>
