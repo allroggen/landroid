@@ -1,0 +1,76 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Worx Vision account",
+        "description": "Enter your Worx account credentials.",
+        "data": {
+          "email": "Email",
+          "password": "Password",
+          "cloud": "Cloud (worx/kress/landxcape)"
+        }
+      },
+      "select_mower": {
+        "title": "Select mower",
+        "description": "Multiple mowers were found. Select the mower to add.",
+        "data": {
+          "serial_number": "Mower"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to cloud with these credentials.",
+      "no_devices": "No mower devices found for this account."
+    },
+    "abort": {
+      "already_configured": "This mower is already configured."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Battery"
+      },
+      "error_code": {
+        "name": "Error code"
+      },
+      "error_message": {
+        "name": "Error message"
+      },
+      "total_mowing_time": {
+        "name": "Total mowing time"
+      },
+      "last_update": {
+        "name": "Last update"
+      },
+      "status": {
+        "name": "Status"
+      },
+      "latitude": {
+        "name": "Latitude"
+      },
+      "longitude": {
+        "name": "Longitude"
+      }
+    },
+    "binary_sensor": {
+      "is_mowing": {
+        "name": "Mowing"
+      },
+      "rain_delay_active": {
+        "name": "Rain delay active"
+      },
+      "error": {
+        "name": "Error"
+      },
+      "charging": {
+        "name": "Charging"
+      }
+    },
+    "switch": {
+      "schedule": {
+        "name": "Schedule"
+      }
+    }
+  }
+}
