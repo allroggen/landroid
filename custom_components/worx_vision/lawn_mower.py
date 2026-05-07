@@ -15,11 +15,7 @@ from .coordinator import WorxVisionCoordinator
 
 LawnMowerEntity = lawn_mower_platform.LawnMowerEntity
 LawnMowerActivity = lawn_mower_platform.LawnMowerActivity
-LawnMowerEntityFeature = getattr(lawn_mower_platform, "LawnMowerEntityFeature", None)
-
-FEATURE_START = int(getattr(LawnMowerEntityFeature, "START_MOWING", 0))
-FEATURE_PAUSE = int(getattr(LawnMowerEntityFeature, "PAUSE", 0))
-FEATURE_DOCK = int(getattr(LawnMowerEntityFeature, "DOCK", 0))
+LawnMowerEntityFeature = lawn_mower_platform.LawnMowerEntityFeature
 
 
 async def async_setup_entry(
@@ -45,7 +41,11 @@ class WorxVisionLawnMowerEntity(
         super().__init__(coordinator)
         self._attr_unique_id = f"{coordinator.serial_number}_mower"
         self._attr_name = coordinator.data.name
-        self._attr_supported_features = FEATURE_START | FEATURE_PAUSE | FEATURE_DOCK
+        self._attr_supported_features = (
+            LawnMowerEntityFeature.START_MOWING
+            | LawnMowerEntityFeature.PAUSE
+            | LawnMowerEntityFeature.DOCK
+        )
 
     @property
     def available(self) -> bool:
@@ -58,14 +58,14 @@ class WorxVisionLawnMowerEntity(
         data = self.coordinator.data
 
         if data.error_id not in (None, 0):
-            return getattr(LawnMowerActivity, "ERROR", None)
+            return LawnMowerActivity.ERROR
         if data.is_mowing:
-            return getattr(LawnMowerActivity, "MOWING", None)
+            return LawnMowerActivity.MOWING
         if data.is_paused:
-            return getattr(LawnMowerActivity, "PAUSED", None)
+            return LawnMowerActivity.PAUSED
         if data.is_docked:
-            return getattr(LawnMowerActivity, "DOCKED", None)
-        return getattr(LawnMowerActivity, "IDLE", None)
+            return LawnMowerActivity.DOCKED
+        return LawnMowerActivity.IDLE
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:

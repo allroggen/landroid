@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 from typing import Any
+from functools import partial
 
 import voluptuous as vol
 from pyworxcloud import WorxCloud
@@ -94,19 +95,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.services.async_register(
             DOMAIN,
             SERVICE_START_ZONE,
-            lambda call: _handle_start_zone(hass, call),
+            partial(_handle_start_zone, hass),
             schema=START_ZONE_SCHEMA,
         )
         hass.services.async_register(
             DOMAIN,
             SERVICE_SET_SCHEDULE,
-            lambda call: _handle_set_schedule(hass, call),
+            partial(_handle_set_schedule, hass),
             schema=SET_SCHEDULE_SCHEMA,
         )
         hass.services.async_register(
             DOMAIN,
             SERVICE_OTS,
-            lambda call: _handle_ots(hass, call),
+            partial(_handle_ots, hass),
             schema=OTS_SCHEMA,
         )
 

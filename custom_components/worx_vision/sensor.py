@@ -159,8 +159,8 @@ class WorxVisionSensorEntity(
         }
 
 
-def datetime_age(value):
-    """Return age of timestamp in seconds."""
+def datetime_age(value: datetime) -> int:
+    """Return the age of a UTC timestamp in whole seconds."""
     now = datetime.now(timezone.utc)
     delta = now - value.astimezone(timezone.utc)
     return max(0, int(delta.total_seconds()))

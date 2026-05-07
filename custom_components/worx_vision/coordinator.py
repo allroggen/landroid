@@ -6,6 +6,7 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
+from uuid import uuid4
 
 from pyworxcloud import (
     LandroidEvent,
@@ -203,7 +204,7 @@ class WorxVisionCoordinator(DataUpdateCoordinator[WorxVisionData]):
         if entries is not None:
             new_entries = [
                 ScheduleEntry(
-                    entry_id=str(item.get("id", f"service_{index}")),
+                    entry_id=str(item.get("id", f"service_{uuid4()}")),
                     day=str(item["day"]),
                     start=str(item["start"]),
                     duration=int(item["duration"]),
@@ -215,7 +216,7 @@ class WorxVisionCoordinator(DataUpdateCoordinator[WorxVisionData]):
                     source=str(item.get("source", "service")),
                     secondary=bool(item.get("secondary", False)),
                 )
-                for index, item in enumerate(entries)
+                for item in entries
             ]
 
         model = ScheduleModel(
