@@ -1,0 +1,76 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Worx Vision Konto",
+        "description": "Bitte gib deine Worx-Zugangsdaten ein.",
+        "data": {
+          "email": "E-Mail",
+          "password": "Passwort",
+          "cloud": "Cloud (worx/kress/landxcape)"
+        }
+      },
+      "select_mower": {
+        "title": "Mäher auswählen",
+        "description": "Mehrere Mäher wurden gefunden. Bitte einen Mäher auswählen.",
+        "data": {
+          "serial_number": "Mäher"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung zur Cloud mit diesen Zugangsdaten fehlgeschlagen.",
+      "no_devices": "Für dieses Konto wurden keine Mäher gefunden."
+    },
+    "abort": {
+      "already_configured": "Dieser Mäher ist bereits konfiguriert."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": {
+        "name": "Batterie"
+      },
+      "error_code": {
+        "name": "Fehlercode"
+      },
+      "error_message": {
+        "name": "Fehlermeldung"
+      },
+      "total_mowing_time": {
+        "name": "Gesamtmähzeit"
+      },
+      "last_update": {
+        "name": "Letzte Aktualisierung"
+      },
+      "status": {
+        "name": "Status"
+      },
+      "latitude": {
+        "name": "Breitengrad"
+      },
+      "longitude": {
+        "name": "Längengrad"
+      }
+    },
+    "binary_sensor": {
+      "is_mowing": {
+        "name": "Mäht"
+      },
+      "rain_delay_active": {
+        "name": "Regenverzögerung aktiv"
+      },
+      "error": {
+        "name": "Fehler"
+      },
+      "charging": {
+        "name": "Lädt"
+      }
+    },
+    "switch": {
+      "schedule": {
+        "name": "Zeitplan"
+      }
+    }
+  }
+}

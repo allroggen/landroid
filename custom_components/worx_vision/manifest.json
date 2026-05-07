@@ -1,0 +1,17 @@
+{
+  "domain": "worx_vision",
+  "name": "Worx Vision",
+  "codeowners": [
+    "@allroggen"
+  ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/allroggen/landroid",
+  "integration_type": "device",
+  "iot_class": "cloud_push",
+  "issue_tracker": "https://github.com/allroggen/landroid/issues",
+  "requirements": [
+    "pyworxcloud>=6.3.6"
+  ],
+  "version": "0.1.0"
+}

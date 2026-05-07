@@ -1,0 +1,9 @@
+{
+  "name": "Worx Vision",
+  "content_in_root": false,
+  "render_readme": true,
+  "domains": [
+    "worx_vision"
+  ],
+  "homeassistant": "2024.3.0"
+}

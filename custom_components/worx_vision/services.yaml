@@ -1,0 +1,71 @@
+start_zone:
+  name: Start zone
+  description: Start mowing from a given zone.
+  fields:
+    serial_number:
+      name: Serial number
+      description: Optional mower serial number, if multiple mowers are configured.
+      example: "1234567890"
+      selector:
+        text:
+    zone:
+      name: Zone
+      description: Zone number to start from.
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 20
+          mode: box
+
+set_schedule:
+  name: Set schedule
+  description: Update schedule settings and/or full schedule entries.
+  fields:
+    serial_number:
+      name: Serial number
+      description: Optional mower serial number, if multiple mowers are configured.
+      selector:
+        text:
+    enabled:
+      name: Enabled
+      description: Enable or disable schedule.
+      selector:
+        boolean:
+    time_extension:
+      name: Time extension
+      description: Time extension value (integration-level schedule parameter).
+      selector:
+        number:
+          min: -100
+          max: 100
+          mode: box
+    entries:
+      name: Entries
+      description: Full list of schedule entries as objects (day/start/duration/boundary).
+      selector:
+        object:
+
+ots:
+  name: One-time schedule
+  description: Start one-time mowing run.
+  fields:
+    serial_number:
+      name: Serial number
+      description: Optional mower serial number, if multiple mowers are configured.
+      selector:
+        text:
+    boundary:
+      name: Boundary cut
+      description: If true, include edge/boundary cut.
+      selector:
+        boolean:
+    runtime:
+      name: Runtime
+      description: Runtime in minutes.
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 600
+          mode: box
