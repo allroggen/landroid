@@ -1,0 +1,31 @@
+<svg width="1200" height="320" viewBox="0 0 1200 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Worx Vision Home Assistant Banner">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#a3e635"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="320" rx="28" fill="url(#bg)"/>
+  <circle cx="1060" cy="84" r="86" fill="#60a5fa" opacity="0.18"/>
+  <circle cx="1120" cy="250" r="110" fill="#22d3ee" opacity="0.12"/>
+  <rect x="64" y="76" width="130" height="130" rx="24" fill="#0ea5e9" opacity="0.94"/>
+  <path d="M104 175 L129 120 L154 175 Z" fill="#e0f2fe"/>
+  <rect x="116" y="172" width="25" height="28" rx="6" fill="#e0f2fe"/>
+
+  <text x="230" y="130" fill="#f8fafc" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="50" font-weight="700">
+    Worx Vision
+  </text>
+  <text x="230" y="178" fill="#cbd5e1" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="30" font-weight="500">
+    Home Assistant Integration
+  </text>
+
+  <rect x="230" y="206" width="430" height="12" rx="6" fill="url(#accent)" opacity="0.95"/>
+  <text x="230" y="258" fill="#bae6fd" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24">
+    Control your Landroid mower directly in Home Assistant
+  </text>
+</svg>
