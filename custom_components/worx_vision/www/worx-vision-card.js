@@ -121,10 +121,10 @@ class WorxVisionCard extends HTMLElement {
     const rows = document.createElement("div");
     rows.className = "rows";
     rows.append(
-      this._buildInfoRow("Mäher", mower.state || "unknown"),
+      this._buildInfoRow("Mower", mower.state || "unknown"),
       this._buildInfoRow("Status", status?.state || "n/a"),
-      this._buildInfoRow("Akku", battery?.state ? `${battery.state}%` : "n/a"),
-      this._buildInfoRow("Zeitplan", schedule?.state || "n/a")
+      this._buildInfoRow("Battery", battery?.state ? `${battery.state}%` : "n/a"),
+      this._buildInfoRow("Schedule", schedule?.state || "n/a")
     );
 
     const actions = document.createElement("div");
