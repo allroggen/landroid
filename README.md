@@ -8,7 +8,7 @@
 
 Custom Home Assistant integration for Worx Vision / Landroid robotic mowers powered by `pyworxcloud`.
 
-**Version:** `0.2.0`
+**Version:** `0.2.1`
 
 ## Features
 
@@ -173,6 +173,12 @@ If you want a product-style UX, a dedicated custom Lovelace card can be built la
 
 - Issues / bug reports: <https://github.com/allroggen/landroid/issues>
 - Feature requests are welcome via GitHub issues
+
+## HACS logo / branding
+
+- The banner on the HACS detail page is rendered from this README (`hacs.json` has `render_readme: true`).
+- The integration icon/logo in HACS/Home Assistant does **not** come from `hacs.json`.
+- For the real integration icon, add branding for domain `worx_vision` in `home-assistant/brands` under `core_integrations/worx_vision`.
 
 ## Hinweis (DE)
 
