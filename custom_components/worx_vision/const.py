@@ -2,12 +2,16 @@
 
 from __future__ import annotations
 
+import json
 from datetime import timedelta
+from pathlib import Path
 
 from homeassistant.const import Platform
 
 DOMAIN = "worx_vision"
-INTEGRATION_VERSION = "0.2.2"
+INTEGRATION_VERSION: str = json.loads(
+    (Path(__file__).parent / "manifest.json").read_text()
+)["version"]
 FRONTEND_CARD_FILENAME = "worx-vision-card.js"
 FRONTEND_CARD_URL_PATH = f"/{DOMAIN}"
 FRONTEND_CARD_MODULE_URL = f"{FRONTEND_CARD_URL_PATH}/{FRONTEND_CARD_FILENAME}"

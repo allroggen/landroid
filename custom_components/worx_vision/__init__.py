@@ -151,12 +151,18 @@ async def _async_setup_frontend_card(hass: HomeAssistant) -> None:
     try:
         # Static paths cannot be unregistered from aiohttp, so only register once
         # per HA process lifetime (survives config-entry reloads).
+        # Set the flag before the await to prevent a race when multiple entries
+        # are set up concurrently; clear it if registration actually fails.
         if not hass.data.get(DATA_STATIC_PATH_REGISTERED):
-            card_dir = Path(__file__).parent / "www"
-            await hass.http.async_register_static_paths(
-                [StaticPathConfig(FRONTEND_CARD_URL_PATH, str(card_dir), cache_headers=False)]
-            )
             hass.data[DATA_STATIC_PATH_REGISTERED] = True
+            try:
+                card_dir = Path(__file__).parent / "www"
+                await hass.http.async_register_static_paths(
+                    [StaticPathConfig(FRONTEND_CARD_URL_PATH, str(card_dir), cache_headers=False)]
+                )
+            except Exception:
+                hass.data.pop(DATA_STATIC_PATH_REGISTERED, None)
+                raise
 
         versioned_url = f"{FRONTEND_CARD_MODULE_URL}?v={INTEGRATION_VERSION}"
 
