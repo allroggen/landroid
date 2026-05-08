@@ -144,17 +144,22 @@ async def _async_setup_frontend_card(hass: HomeAssistant) -> None:
     if hass.data.get(DATA_FRONTEND_CARD_REGISTERED):
         return
 
-    card_dir = Path(__file__).parent / "www"
-    await hass.http.async_register_static_paths(
-        [StaticPathConfig(FRONTEND_CARD_URL_PATH, str(card_dir), cache_headers=False)]
-    )
-
-    @callback
-    def _register_frontend_resource(*_: Any) -> None:
-        add_extra_js_url(hass, FRONTEND_CARD_MODULE_URL)
-
-    async_when_setup_or_start(hass, "frontend", _register_frontend_resource)
     hass.data[DATA_FRONTEND_CARD_REGISTERED] = True
+
+    try:
+        card_dir = Path(__file__).parent / "www"
+        await hass.http.async_register_static_paths(
+            [StaticPathConfig(FRONTEND_CARD_URL_PATH, str(card_dir), cache_headers=False)]
+        )
+
+        @callback
+        def _register_frontend_resource(*_: Any) -> None:
+            add_extra_js_url(hass, FRONTEND_CARD_MODULE_URL)
+
+        async_when_setup_or_start(hass, "frontend", _register_frontend_resource)
+    except Exception:
+        hass.data.pop(DATA_FRONTEND_CARD_REGISTERED, None)
+        raise
 
 
 def _iter_coordinators(

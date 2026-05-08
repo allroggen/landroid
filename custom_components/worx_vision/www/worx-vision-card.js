@@ -1,4 +1,10 @@
 class WorxVisionCard extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    this._initialized = false;
+  }
+
   static getConfigElement() {
     return document.createElement("worx-vision-card-editor");
   }
@@ -64,19 +70,10 @@ class WorxVisionCard extends HTMLElement {
     return button;
   }
 
-  _render() {
-    if (!this._hass || !this._config) {
+  _initCard() {
+    if (this._initialized) {
       return;
     }
-
-    const mower = this._hass.states[this._config.entity];
-    const objectId = this._config.entity.split(".")[1] || "";
-    const battery = this._hass.states[`sensor.${objectId}_battery`];
-    const status = this._hass.states[`sensor.${objectId}_status`];
-    const schedule = this._hass.states[`switch.${objectId}_schedule`];
-
-    const root = this.shadowRoot || this.attachShadow({ mode: "open" });
-    root.innerHTML = "";
 
     const style = document.createElement("style");
     style.textContent = `
@@ -102,49 +99,88 @@ class WorxVisionCard extends HTMLElement {
       .missing { color: var(--error-color); }
     `;
 
-    const card = document.createElement("ha-card");
-    card.header = this._config.name || "Worx Vision";
-
+    this._card = document.createElement("ha-card");
     const content = document.createElement("div");
     content.className = "content";
 
-    if (!mower) {
-      const missing = document.createElement("div");
-      missing.className = "missing";
-      missing.textContent = `Entity not found: ${this._config.entity}`;
-      content.append(missing);
-      card.append(content);
-      root.append(style, card);
-      return;
+    this._missing = document.createElement("div");
+    this._missing.className = "missing";
+    this._missing.hidden = true;
+
+    this._rows = document.createElement("div");
+    this._rows.className = "rows";
+    this._values = {};
+    const rows = [
+      ["Mower", "mower"],
+      ["Status", "status"],
+      ["Battery", "battery"],
+      ["Schedule", "schedule"],
+    ];
+    for (const [label, key] of rows) {
+      const row = this._buildInfoRow(label, "n/a");
+      this._values[key] = row.querySelector(".value");
+      this._rows.append(row);
     }
 
-    const rows = document.createElement("div");
-    rows.className = "rows";
-    rows.append(
-      this._buildInfoRow("Mower", mower.state || "unknown"),
-      this._buildInfoRow("Status", status?.state || "n/a"),
-      this._buildInfoRow("Battery", battery?.state ? `${battery.state}%` : "n/a"),
-      this._buildInfoRow("Schedule", schedule?.state || "n/a")
-    );
-
-    const actions = document.createElement("div");
-    actions.className = "actions";
-    actions.append(
+    this._actions = document.createElement("div");
+    this._actions.className = "actions";
+    this._actions.append(
       this._buildActionButton("Start", "mdi:play", "start_mowing"),
       this._buildActionButton("Pause", "mdi:pause", "pause"),
       this._buildActionButton("Dock", "mdi:home-import-outline", "dock")
     );
 
-    content.append(rows, actions);
-    card.append(content);
-    root.append(style, card);
+    content.append(this._missing, this._rows, this._actions);
+    this._card.append(content);
+    this.shadowRoot.append(style, this._card);
+    this._initialized = true;
+  }
+
+  _render() {
+    if (!this._hass || !this._config) {
+      return;
+    }
+    this._initCard();
+
+    const mower = this._hass.states[this._config.entity];
+    const objectId = this._config.entity.split(".")[1] || "";
+    const battery = this._hass.states[`sensor.${objectId}_battery`];
+    const status = this._hass.states[`sensor.${objectId}_status`];
+    const schedule = this._hass.states[`switch.${objectId}_schedule`];
+    this._card.header = this._config.name || "Worx Vision";
+
+    if (!mower) {
+      this._missing.textContent = `Entity not found: ${this._config.entity}`;
+      this._missing.hidden = false;
+      this._rows.hidden = true;
+      this._actions.hidden = true;
+      return;
+    }
+
+    this._missing.hidden = true;
+    this._rows.hidden = false;
+    this._actions.hidden = false;
+    this._values.mower.textContent = mower.state || "unknown";
+    this._values.status.textContent = status?.state || "n/a";
+    this._values.battery.textContent = battery?.state
+      ? `${battery.state}%`
+      : "n/a";
+    this._values.schedule.textContent = schedule?.state || "n/a";
   }
 }
 
 class WorxVisionCardEditor extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: "open" });
+    this._onEntityChange = this._onEntityChange.bind(this);
+    this._onNameChange = this._onNameChange.bind(this);
+    this._initEditor();
+  }
+
   setConfig(config) {
     this._config = config || {};
-    this._render();
+    this._updateInputs();
   }
 
   _onEntityChange(event) {
@@ -169,9 +205,8 @@ class WorxVisionCardEditor extends HTMLElement {
     );
   }
 
-  _render() {
-    const root = this.shadowRoot || this.attachShadow({ mode: "open" });
-    root.innerHTML = `
+  _initEditor() {
+    this.shadowRoot.innerHTML = `
       <style>
         .wrapper { display: grid; gap: 12px; padding: 4px 0; }
         label { font-weight: 500; display: grid; gap: 6px; }
@@ -195,13 +230,18 @@ class WorxVisionCardEditor extends HTMLElement {
       </div>
     `;
 
-    const entityInput = root.getElementById("entity");
-    const nameInput = root.getElementById("name");
+    this._entityInput = this.shadowRoot.getElementById("entity");
+    this._nameInput = this.shadowRoot.getElementById("name");
+    this._entityInput.addEventListener("change", this._onEntityChange);
+    this._nameInput.addEventListener("change", this._onNameChange);
+  }
 
-    entityInput.value = this._config?.entity || "";
-    nameInput.value = this._config?.name || "";
-    entityInput.addEventListener("change", this._onEntityChange.bind(this));
-    nameInput.addEventListener("change", this._onNameChange.bind(this));
+  _updateInputs() {
+    if (!this._entityInput || !this._nameInput) {
+      return;
+    }
+    this._entityInput.value = this._config?.entity || "";
+    this._nameInput.value = this._config?.name || "";
   }
 }
 
