@@ -50,6 +50,86 @@ Custom Home Assistant integration for Worx Vision / Landroid robotic mowers powe
 - Enter Worx cloud email and password.
 - If you have multiple mowers, choose the target mower.
 
+## Dashboard card (Lovelace)
+
+You can build a useful dashboard view immediately with the entities already provided by this integration.
+
+### 1) Quick start card
+
+Use one compact stack for status and actions (`start`, `pause`, `dock`):
+
+```yaml
+type: vertical-stack
+cards:
+  - type: entities
+    title: Worx Vision
+    entities:
+      - entity: lawn_mower.my_mower
+        name: Mower
+      - entity: sensor.my_mower_battery
+      - entity: sensor.my_mower_status
+      - entity: binary_sensor.my_mower_error
+      - entity: switch.my_mower_schedule
+  - type: horizontal-stack
+    cards:
+      - type: button
+        name: Start
+        icon: mdi:play
+        tap_action:
+          action: perform-action
+          perform_action: lawn_mower.start_mowing
+          target:
+            entity_id: lawn_mower.my_mower
+      - type: button
+        name: Pause
+        icon: mdi:pause
+        tap_action:
+          action: perform-action
+          perform_action: lawn_mower.pause
+          target:
+            entity_id: lawn_mower.my_mower
+      - type: button
+        name: Dock
+        icon: mdi:home-import-outline
+        tap_action:
+          action: perform-action
+          perform_action: lawn_mower.dock
+          target:
+            entity_id: lawn_mower.my_mower
+```
+
+> Replace `my_mower` with your real entity names from Home Assistant.
+
+### 2) Enhanced compact layout
+
+Add a compact overview with live states and location values:
+
+```yaml
+type: vertical-stack
+cards:
+  - type: entities
+    title: Worx Vision Overview
+    entities:
+      - entity: lawn_mower.my_mower
+      - entity: sensor.my_mower_status
+      - entity: sensor.my_mower_last_update
+      - entity: sensor.my_mower_battery
+      - entity: binary_sensor.my_mower_is_mowing
+      - entity: binary_sensor.my_mower_charging
+      - entity: binary_sensor.my_mower_rain_delay_active
+      - entity: binary_sensor.my_mower_error
+      - entity: switch.my_mower_schedule
+  - type: entities
+    title: Position
+    entities:
+      - entity: sensor.my_mower_latitude
+      - entity: sensor.my_mower_longitude
+```
+
+### 3) Future option: dedicated custom card
+
+If you want a product-style UX, a dedicated custom Lovelace card can be built later (specialized mower visuals, state icons, and highlighted error handling).
+
 ## Services
 
 | Service | Description | Fields |
