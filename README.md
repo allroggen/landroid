@@ -8,6 +8,8 @@
 
 Custom Home Assistant integration for Worx Vision / Landroid robotic mowers powered by `pyworxcloud`.
 
+**Version:** `0.2.0`
+
 ## Features
 
 - Login with Worx account (email/password)
