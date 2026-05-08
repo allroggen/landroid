@@ -7,10 +7,12 @@ from datetime import timedelta
 from homeassistant.const import Platform
 
 DOMAIN = "worx_vision"
+INTEGRATION_VERSION = "0.2.2"
 FRONTEND_CARD_FILENAME = "worx-vision-card.js"
 FRONTEND_CARD_URL_PATH = f"/{DOMAIN}"
 FRONTEND_CARD_MODULE_URL = f"{FRONTEND_CARD_URL_PATH}/{FRONTEND_CARD_FILENAME}"
 DATA_FRONTEND_CARD_REGISTERED = f"{DOMAIN}_frontend_card_registered"
+DATA_STATIC_PATH_REGISTERED = f"{DOMAIN}_static_path_registered"
 
 CONF_SERIAL_NUMBER = "serial_number"
 CONF_CLOUD = "cloud"

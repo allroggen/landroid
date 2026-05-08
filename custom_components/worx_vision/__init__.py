@@ -29,10 +29,12 @@ from .const import (
     CONF_CLOUD,
     CONF_SERIAL_NUMBER,
     DATA_FRONTEND_CARD_REGISTERED,
+    DATA_STATIC_PATH_REGISTERED,
     DEFAULT_CLOUD,
     DOMAIN,
     FRONTEND_CARD_MODULE_URL,
     FRONTEND_CARD_URL_PATH,
+    INTEGRATION_VERSION,
     PLATFORMS,
     SERVICE_OTS,
     SERVICE_SET_SCHEDULE,
@@ -134,7 +136,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             if hass.services.has_service(DOMAIN, service):
                 hass.services.async_remove(DOMAIN, service)
         if hass.data.pop(DATA_FRONTEND_CARD_REGISTERED, False):
-            remove_extra_js_url(hass, FRONTEND_CARD_MODULE_URL)
+            remove_extra_js_url(hass, f"{FRONTEND_CARD_MODULE_URL}?v={INTEGRATION_VERSION}")
 
     return unload_ok
 
@@ -147,14 +149,20 @@ async def _async_setup_frontend_card(hass: HomeAssistant) -> None:
     hass.data[DATA_FRONTEND_CARD_REGISTERED] = True
 
     try:
-        card_dir = Path(__file__).parent / "www"
-        await hass.http.async_register_static_paths(
-            [StaticPathConfig(FRONTEND_CARD_URL_PATH, str(card_dir), cache_headers=False)]
-        )
+        # Static paths cannot be unregistered from aiohttp, so only register once
+        # per HA process lifetime (survives config-entry reloads).
+        if not hass.data.get(DATA_STATIC_PATH_REGISTERED):
+            card_dir = Path(__file__).parent / "www"
+            await hass.http.async_register_static_paths(
+                [StaticPathConfig(FRONTEND_CARD_URL_PATH, str(card_dir), cache_headers=False)]
+            )
+            hass.data[DATA_STATIC_PATH_REGISTERED] = True
+
+        versioned_url = f"{FRONTEND_CARD_MODULE_URL}?v={INTEGRATION_VERSION}"
 
         @callback
         def _register_frontend_resource(*_: Any) -> None:
-            add_extra_js_url(hass, FRONTEND_CARD_MODULE_URL)
+            add_extra_js_url(hass, versioned_url)
 
         async_when_setup_or_start(hass, "frontend", _register_frontend_resource)
     except Exception:
