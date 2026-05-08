@@ -22,7 +22,7 @@ class WorxVisionCard extends HTMLElement {
 
   setConfig(config) {
     if (!config || !config.entity) {
-      throw new Error("Entity is required");
+      throw new Error("Entity (lawn_mower.*) is required");
     }
     this._config = config;
   }
@@ -52,14 +52,14 @@ class WorxVisionCard extends HTMLElement {
     return row;
   }
 
-  _buildActionButton(label, icon, service) {
+  _buildActionButton(label, icon, serviceName) {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "action";
     button.textContent = label;
     button.title = label;
     button.addEventListener("click", () => {
-      this._hass.callService("lawn_mower", service, {
+      this._hass.callService("lawn_mower", serviceName, {
         entity_id: this._config.entity,
       });
     });
@@ -143,10 +143,9 @@ class WorxVisionCard extends HTMLElement {
     this._initCard();
 
     const mower = this._hass.states[this._config.entity];
-    const objectId = this._config.entity.split(".")[1] || "";
-    const battery = this._hass.states[`sensor.${objectId}_battery`];
-    const status = this._hass.states[`sensor.${objectId}_status`];
-    const schedule = this._hass.states[`switch.${objectId}_schedule`];
+    const { battery, status, schedule } = this._getRelatedEntities(
+      this._config.entity
+    );
     this._card.header = this._config.name || "Worx Vision";
 
     if (!mower) {
@@ -166,6 +165,15 @@ class WorxVisionCard extends HTMLElement {
       ? `${battery.state}%`
       : "n/a";
     this._values.schedule.textContent = schedule?.state || "n/a";
+  }
+
+  _getRelatedEntities(entityId) {
+    const objectId = entityId.split(".")[1] || "";
+    return {
+      battery: this._hass.states[`sensor.${objectId}_battery`],
+      status: this._hass.states[`sensor.${objectId}_status`],
+      schedule: this._hass.states[`switch.${objectId}_schedule`],
+    };
   }
 }
 

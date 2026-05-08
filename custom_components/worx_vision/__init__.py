@@ -158,6 +158,7 @@ async def _async_setup_frontend_card(hass: HomeAssistant) -> None:
 
         async_when_setup_or_start(hass, "frontend", _register_frontend_resource)
     except Exception:
+        _LOGGER.exception("Failed to register Worx Vision frontend card resources")
         hass.data.pop(DATA_FRONTEND_CARD_REGISTERED, None)
         raise
 
