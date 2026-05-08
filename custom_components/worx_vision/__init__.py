@@ -4,16 +4,20 @@ from __future__ import annotations
 
 import logging
 from functools import partial
+from pathlib import Path
 from typing import Any
 
 import voluptuous as vol
 from pyworxcloud import WorxCloud
 
+from homeassistant.components.frontend import add_extra_js_url, remove_extra_js_url
+from homeassistant.components.http import StaticPathConfig
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
-from homeassistant.core import HomeAssistant, ServiceCall
+from homeassistant.core import HomeAssistant, ServiceCall, callback
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers import config_validation as cv
+from homeassistant.setup import async_when_setup_or_start
 
 from .const import (
     ATTR_BOUNDARY,
@@ -24,8 +28,11 @@ from .const import (
     ATTR_ZONE,
     CONF_CLOUD,
     CONF_SERIAL_NUMBER,
+    DATA_FRONTEND_CARD_REGISTERED,
     DEFAULT_CLOUD,
     DOMAIN,
+    FRONTEND_CARD_MODULE_URL,
+    FRONTEND_CARD_URL_PATH,
     PLATFORMS,
     SERVICE_OTS,
     SERVICE_SET_SCHEDULE,
@@ -69,6 +76,7 @@ async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Worx Vision from a config entry."""
     hass.data.setdefault(DOMAIN, {})
+    await _async_setup_frontend_card(hass)
 
     cloud = WorxCloud(
         entry.data[CONF_EMAIL],
@@ -125,8 +133,28 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         for service in (SERVICE_START_ZONE, SERVICE_SET_SCHEDULE, SERVICE_OTS):
             if hass.services.has_service(DOMAIN, service):
                 hass.services.async_remove(DOMAIN, service)
+        if hass.data.pop(DATA_FRONTEND_CARD_REGISTERED, False):
+            remove_extra_js_url(hass, FRONTEND_CARD_MODULE_URL)
 
     return unload_ok
+
+
+async def _async_setup_frontend_card(hass: HomeAssistant) -> None:
+    """Register and load the frontend card resource once."""
+    if hass.data.get(DATA_FRONTEND_CARD_REGISTERED):
+        return
+
+    card_dir = Path(__file__).parent / "www"
+    await hass.http.async_register_static_paths(
+        [StaticPathConfig(FRONTEND_CARD_URL_PATH, str(card_dir), cache_headers=False)]
+    )
+
+    @callback
+    def _register_frontend_resource(*_: Any) -> None:
+        add_extra_js_url(hass, FRONTEND_CARD_MODULE_URL)
+
+    async_when_setup_or_start(hass, "frontend", _register_frontend_resource)
+    hass.data[DATA_FRONTEND_CARD_REGISTERED] = True
 
 
 def _iter_coordinators(

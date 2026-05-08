@@ -52,7 +52,23 @@ Custom Home Assistant integration for Worx Vision / Landroid robotic mowers powe
 
 ## Dashboard card (Lovelace)
 
-You can build a useful dashboard view immediately with the entities already provided by this integration.
+This integration now provides a built-in custom Lovelace card that appears in the card picker.
+
+### Add predefined card from Dashboard UI
+
+1. Open your dashboard and click **Add card**.
+2. Search for **Worx Vision Card**.
+3. Select your `lawn_mower.*` entity in the card editor.
+
+Card type (manual YAML):
+
+```yaml
+type: custom:worx-vision-card
+entity: lawn_mower.my_mower
+name: Worx Vision
+```
+
+You can still build custom layouts with the entities provided by this integration:
 
 ### 1) Quick start card
 
