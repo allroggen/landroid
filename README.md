@@ -1,6 +1,6 @@
 # Worx Vision for Home Assistant
 
-![Worx Vision Banner](images/worx-vision-banner.svg)
+![Worx Vision Banner](https://raw.githubusercontent.com/allroggen/landroid/main/images/worx-vision-banner.svg)
 
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz/)
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-2024.3%2B-41BDF5.svg)](https://www.home-assistant.io/)
@@ -8,7 +8,7 @@
 
 Custom Home Assistant integration for Worx Vision / Landroid robotic mowers powered by `pyworxcloud`.
 
-**Version:** `0.2.1`
+**Version:** `0.2.2`
 
 ## Features
 
